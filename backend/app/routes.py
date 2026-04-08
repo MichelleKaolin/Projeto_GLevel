@@ -463,9 +463,9 @@ def dashboard_insights(student_id: int, db: Session = Depends(get_db)):
         .all()
     )
     best_subj = None
-    best_acc = 0
+    best_acc = -1
     worst_subj = None
-    worst_acc = 100
+    worst_acc = 101
     for enrollment in enrolled:
         subj = db.query(Subject).filter(Subject.id == enrollment.subject_id).first()
         records = (
@@ -486,6 +486,16 @@ def dashboard_insights(student_id: int, db: Session = Depends(get_db)):
         if acc < worst_acc:
             worst_acc = acc
             worst_subj = subj.name
+
+    if not enrolled or best_subj is None:
+        return [
+            InsightItem(
+                type="trend",
+                title="Bem-vindo!",
+                message="Comece a responder questoes para receber insights personalizados sobre seu desempenho.",
+                color="#00F5FF",
+            ),
+        ]
 
     return [
         InsightItem(
