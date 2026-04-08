@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLevel — Analise. Evolua. Domine.</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lime:#B5FF2D;--cyan:#00F5FF;--violet:#7C3AED;--coral:#FF6B6B;--gold:#FFD700;
+  --bg:#050508;--bg2:#0C0C14;--bg3:#121220;--card:#161624;--border:rgba(255,255,255,0.06);
+  --text:#F2F2FF;--text2:#7878AA;--text3:#3A3A5A;
+  --radius:16px;--shadow:0 16px 60px rgba(0,0,0,0.6);
+}
+body.light{
+  --bg:#F8F8FF;--bg2:#F0F0FF;--bg3:#E8E8F8;--card:#FFFFFF;--border:rgba(0,0,60,0.07);
+  --text:#080820;--text2:#5050A0;--text3:#B0B0D0;--shadow:0 16px 60px rgba(0,0,60,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
+.page{display:none;min-height:100vh;}
+.page.active{display:flex;}
+
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 700px 500px at 100% 0%,rgba(124,58,237,.08) 0%,transparent 60%),radial-gradient(ellipse 500px 500px at 0% 100%,rgba(181,255,45,.06) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* LANDING */
+#landing{flex-direction:column;position:relative;z-index:1;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:24px 52px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;color:var(--text);}
+.logo .g{color:var(--lime);}
+.nav-r{display:flex;gap:12px;align-items:center;}
+.btn{padding:10px 24px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;border:none;}
+.btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border);}
+.btn-ghost:hover{border-color:var(--lime);}
+.btn-lime{background:var(--lime);color:#000;}
+.btn-lime:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(181,255,45,.4);}
+.theme-btn{width:40px;height:40px;border-radius:8px;background:var(--bg3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:all .2s;}
+
+.hero{padding:60px 52px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+@media(max-width:900px){.hero{grid-template-columns:1fr;gap:40px;}}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(181,255,45,.08);border:1px solid rgba(181,255,45,.2);padding:6px 14px;border-radius:4px;font-size:12px;font-weight:700;color:var(--lime);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,9vw,110px);line-height:.9;letter-spacing:2px;margin-bottom:24px;}
+h1 em{font-style:normal;color:var(--lime);}
+.hero-sub{font-size:17px;color:var(--text2);line-height:1.7;max-width:440px;margin-bottom:36px;}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-lg{padding:15px 36px;font-size:15px;border-radius:8px;}
+
+/* Mini dashboard preview */
+.mini-dash{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--shadow);}
+.md-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.md-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--text2);}
+.md-badge{background:rgba(181,255,45,.15);color:var(--lime);font-size:12px;font-weight:700;padding:4px 10px;border-radius:4px;}
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.ms{background:var(--bg3);border-radius:10px;padding:14px;}
+.ms-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.ms-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;}
+.c-lime{color:var(--lime);}
+.c-cyan{color:var(--cyan);}
+.c-coral{color:var(--coral);}
+.c-gold{color:var(--gold);}
+.c-violet{color:var(--violet);}
+.bar-chart{margin-top:8px;}
+.bc-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px;}
+.bc-label{width:80px;color:var(--text2);font-size:12px;white-space:nowrap;}
+.bc-bar-bg{flex:1;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;}
+.bc-bar{height:100%;border-radius:4px;transition:width .6s ease;}
+.bc-val{width:32px;text-align:right;font-weight:700;font-size:12px;}
+
+.features{padding:0 52px 80px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all .3s;position:relative;overflow:hidden;}
+.fc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent,transparent),transparent);opacity:.05;pointer-events:none;}
+.fc:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
+.fc-ico{font-size:28px;margin-bottom:14px;}
+.fc-t{font-weight:800;font-size:16px;margin-bottom:8px;}
+.fc-d{font-size:14px;color:var(--text2);line-height:1.5;}
+
+/* AUTH */
+#auth{align-items:stretch;}
+.auth-l{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 48px;background:var(--bg2);position:relative;overflow:hidden;}
+.auth-l::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(181,255,45,.08) 0%,transparent 50%,rgba(124,58,237,.08) 100%);}
+.al-logo{font-family:'Bebas Neue',sans-serif;font-size:64px;letter-spacing:3px;margin-bottom:8px;position:relative;z-index:1;}
+.al-logo .g{color:var(--lime);}
+.al-tag{color:var(--text2);font-size:17px;text-align:center;max-width:280px;line-height:1.5;position:relative;z-index:1;margin-bottom:48px;}
+.metrics-preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:320px;position:relative;z-index:1;}
+.mp-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+.mp-val{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:1px;}
+.mp-label{font-size:12px;color:var(--text2);margin-top:2px;}
+.auth-r{width:500px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 48px;background:var(--bg);}
+@media(max-width:768px){.auth-l{display:none;}.auth-r{width:100%;padding:40px 24px;}}
+.back-btn{background:none;border:none;color:var(--text2);cursor:pointer;font-size:14px;margin-bottom:28px;align-self:flex-start;display:flex;align-items:center;gap:6px;}
+.tabs{display:flex;background:var(--bg3);border-radius:8px;padding:4px;width:100%;margin-bottom:32px;}
+.tab{flex:1;padding:10px;border-radius:6px;font-weight:700;font-size:14px;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:all .2s;}
+.tab.active{background:var(--card);color:var(--text);}
+.fg{width:100%;margin-bottom:16px;}
+label{display:block;font-size:11px;font-weight:800;color:var(--text2);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;}
+input,select{width:100%;padding:14px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none;transition:all .2s;}
+input:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(181,255,45,.12);}
+.sub-btn{width:100%;padding:15px;font-size:15px;font-weight:800;border-radius:8px;background:var(--lime);color:#000;border:none;cursor:pointer;margin-top:6px;transition:all .2s;letter-spacing:.5px;}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(181,255,45,.4);}
+
+/* DASHBOARD */
+#dashboard{flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.tb-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+.tb-logo .g{color:var(--lime);}
+.tb-r{display:flex;align-items:center;gap:12px;}
+.ic-btn{width:38px;height:38px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .2s;}
+.ic-btn:hover{background:var(--card);}
+.av{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--lime),var(--cyan));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#000;cursor:pointer;}
+
+.layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;color:var(--text2);font-size:14px;font-weight:600;transition:all .2s;}
+.ni:hover,.ni.active{background:var(--bg3);color:var(--text);}
+.ni.active{background:rgba(181,255,45,.1);color:var(--lime);}
+.ns{font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--text3);padding:14px 12px 5px;text-transform:uppercase;}
+
+.content{flex:1;overflow-y:auto;padding:28px;}
+.view{display:none;}
+.view.active{display:block;}
+
+/* Overview */
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:6px;}
+.page-sub{color:var(--text2);font-size:15px;margin-bottom:28px;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:all .3s;cursor:default;position:relative;overflow:hidden;}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--accent);}
+.kpi-label{font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;line-height:1;}
+.kpi-sub{font-size:12px;color:var(--text3);margin-top:6px;}
+
+.two-col{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:24px;}
+@media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+.card-title{font-weight:800;font-size:16px;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+
+/* Chart bars */
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:140px;padding:0 4px;}
+.cb{flex:1;border-radius:6px 6px 0 0;transition:all .3s;cursor:pointer;position:relative;}
+.cb:hover{filter:brightness(1.2);}
+.cb-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);white-space:nowrap;}
+.chart-x{display:flex;gap:8px;padding:24px 4px 0;height:24px;}
+.cx-item{flex:1;text-align:center;font-size:10px;color:var(--text3);}
+
+/* Difficulty map */
+.diff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+.diff-card{border-radius:10px;padding:14px;cursor:pointer;transition:all .3s;}
+.diff-card:hover{transform:scale(1.03);}
+.diff-subject{font-weight:700;font-size:14px;margin-bottom:6px;color:#fff;}
+.diff-score{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:rgba(255,255,255,.9);}
+.diff-bar{height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:8px;}
+.diff-fill{height:100%;border-radius:2px;background:rgba(255,255,255,.7);}
+
+/* History */
+.history-chart{height:160px;display:flex;align-items:flex-end;gap:3px;padding-bottom:0;}
+.hc-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.hc-bar{width:100%;border-radius:3px 3px 0 0;transition:all .3s;}
+.hc-label{font-size:9px;color:var(--text3);margin-top:4px;text-align:center;}
+
+/* Reports */
+.report-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;display:flex;align-items:center;gap:20px;transition:all .2s;}
+.report-card:hover{transform:translateX(4px);border-color:var(--lime);}
+.rc-icon{font-size:36px;flex-shrink:0;}
+.rc-title{font-weight:700;font-size:16px;margin-bottom:4px;}
+.rc-desc{font-size:13px;color:var(--text2);}
+.rc-btn{margin-left:auto;padding:10px 20px;background:rgba(181,255,45,.15);color:var(--lime);border:1px solid rgba(181,255,45,.2);border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;flex-shrink:0;transition:all .2s;}
+.rc-btn:hover{background:rgba(181,255,45,.25);}
+
+/* Anim */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fadeUp .5s ease forwards;}
+.d1{animation-delay:.08s;}.d2{animation-delay:.16s;}.d3{animation-delay:.24s;}.d4{animation-delay:.32s;}
+
+/* Toasts */
+.toasts{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 24px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);animation:fadeUp .3s ease;}
+@media(max-width:768px){.sidebar{display:none;}.content{padding:16px;}}
+</style>
+</head>
+<body>
+<div class="toasts" id="toasts"></div>
+
+<!-- LANDING -->
+<div id="landing" class="page active">
+  <nav>
+    <div class="logo"><span class="g">G</span>LEVEL</div>
+    <div class="nav-r">
+      <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      <button class="btn btn-ghost" onclick="goAuth('login')">Entrar</button>
+      <button class="btn btn-lime" onclick="goAuth('signup')">Começar agora</button>
+    </div>
+  </nav>
+  <div class="hero">
+    <div class="fu">
+      <div class="hero-tag">📊 Analytics para estudantes</div>
+      <h1>ANALISE.<br><em>EVOLUA.</em><br>DOMINE.</h1>
+      <p class="hero-sub">Dashboard inteligente que monitora seu desempenho, mapeia suas dificuldades e gera relatórios personalizados para otimizar seus estudos.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-lime btn-lg" onclick="goAuth('signup')">Criar conta grátis →</button>
+        <button class="btn btn-ghost btn-lg" onclick="goAuth('login')">Ver demo</button>
+      </div>
+    </div>
+    <div class="fu d2">
+      <div class="mini-dash">
+        <div class="md-header"><div class="md-title">DESEMPENHO SEMANAL</div><div class="md-badge">LIVE</div></div>
+        <div class="mini-stats">
+          <div class="ms"><div class="ms-label">Acertos</div><div class="ms-val c-lime">87%</div></div>
+          <div class="ms"><div class="ms-label">Questões</div><div class="ms-val c-cyan">342</div></div>
+          <div class="ms"><div class="ms-label">Ranking</div><div class="ms-val c-gold">#3</div></div>
+          <div class="ms"><div class="ms-label">Horas</div><div class="ms-val c-coral">24h</div></div>
+        </div>
+        <div class="bar-chart">
+          <div class="bc-row"><span class="bc-label">Algoritmos</span><div class="bc-bar-bg"><div class="bc-bar" style="width:78%;background:linear-gradient(90deg,#00F5FF,#7C3AED)"></div></div><span class="bc-val c-cyan">78%</span></div>
+          <div class="bc-row"><span class="bc-label">Cálculo</span><div class="bc-bar-bg"><div class="bc-bar" style="width:55%;background:linear-gradient(90deg,#FF6B6B,#FF4081)"></div></div><span class="bc-val c-coral">55%</span></div>
+          <div class="bc-row"><span class="bc-label">Física</span><div class="bc-bar-bg"><div class="bc-bar" style="width:91%;background:linear-gradient(90deg,#B5FF2D,#00F5FF)"></div></div><span class="bc-val c-lime">91%</span></div>
+          <div class="bc-row"><span class="bc-label">BD & SQL</span><div class="bc-bar-bg"><div class="bc-bar" style="width:64%;background:linear-gradient(90deg,#FFD700,#FF6B6B)"></div></div><span class="bc-val c-gold">64%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="features">
+    <div class="fc fu" style="--accent:rgba(181,255,45,.2)"><div class="fc-ico">⏱️</div><div class="fc-t">Análise de Tempo</div><div class="fc-d">Veja exatamente quanto tempo você dedica a cada matéria e otimize sua rotina.</div></div>
+    <div class="fc fu d1" style="--accent:rgba(0,245,255,.2)"><div class="fc-ico">🗺️</div><div class="fc-t">Mapa de Dificuldade</div><div class="fc-d">Identifique os tópicos onde você mais erra e foque no que realmente importa.</div></div>
+    <div class="fc fu d2" style="--accent:rgba(124,58,237,.2)"><div class="fc-ico">📈</div><div class="fc-t">Histórico de Evolução</div><div class="fc-d">Acompanhe sua jornada com gráficos interativos de progresso ao longo do tempo.</div></div>
+    <div class="fc fu d3" style="--accent:rgba(255,107,107,.2)"><div class="fc-ico">📋</div><div class="fc-t">Relatórios Personalizados</div><div class="fc-d">Insights acionáveis baseados nos seus dados para turbinar sua estratégia.</div></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="auth" class="page">
+  <div class="auth-l">
+    <div class="al-logo"><span class="g">G</span>LEVEL</div>
+    <div class="al-tag">Análise de desempenho para estudantes universitários.</div>
+    <div class="metrics-preview">
+      <div class="mp-card"><div class="mp-val c-lime">87%</div><div class="mp-label">Taxa de acerto</div></div>
+      <div class="mp-card"><div class="mp-val c-cyan">#3</div><div class="mp-label">Posição ranking</div></div>
+      <div class="mp-card"><div class="mp-val c-coral">↑15%</div><div class="mp-label">Evolução mensal</div></div>
+      <div class="mp-card"><div class="mp-val c-gold">12</div><div class="mp-label">Dias seguidos</div></div>
+    </div>
+  </div>
+  <div class="auth-r">
+    <button class="back-btn" onclick="goPage('landing')">← Voltar</button>
+    <div class="tabs">
+      <button class="tab active" id="t-li" onclick="swTab('li')">Entrar</button>
+      <button class="tab" id="t-su" onclick="swTab('su')">Cadastrar</button>
+    </div>
+    <div id="f-li" style="width:100%">
+      <div class="fg"><label>Email</label><input type="email" placeholder="seu@email.com"></div>
+      <div class="fg"><label>Senha</label><input type="password" placeholder="••••••••"></div>
+      <button class="sub-btn" onclick="login()">ACESSAR DASHBOARD →</button>
+    </div>
+    <div id="f-su" style="width:100%;display:none">
+      <div class="fg"><label>Nome</label><input type="text" placeholder="Seu nome"></div>
+      <div class="fg"><label>Email</label><input type="email" placeholder="seu@email.com"></div>
+      <div class="fg"><label>Universidade</label><input type="text" placeholder="Nome da universidade"></div>
+      <div class="fg"><label>Senha</label><input type="password" placeholder="Mínimo 8 caracteres"></div>
+      <button class="sub-btn" onclick="login()">CRIAR CONTA GRÁTIS 📊</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+  <div class="topbar">
+    <div class="tb-logo"><span class="g">G</span>LEVEL</div>
+    <div class="tb-r">
+      <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      <div class="ic-btn">🔔</div>
+      <div class="av" onclick="goPage('landing')">A</div>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="ns">Dashboard</div>
+      <div class="ni active" onclick="sv('overview')">📊 Visão Geral</div>
+      <div class="ni" onclick="sv('tempo')">⏱️ Análise de Tempo</div>
+      <div class="ni" onclick="sv('dificuldade')">🗺️ Mapa de Dificuldade</div>
+      <div class="ni" onclick="sv('historico')">📈 Histórico</div>
+      <div class="ni" onclick="sv('relatorios')">📋 Relatórios</div>
+      <div class="ns">Apps GeniUs</div>
+      <div class="ni" onclick="toast('🎮 Abrindo GeniUs...')">🎮 GeniUs</div>
+      <div class="ni" onclick="toast('🎙️ Abrindo GTalk...')">🎙️ GTalk</div>
+      <div class="ns">Conta</div>
+      <div class="ni" onclick="sv('perfil')">👤 Perfil</div>
+    </div>
+    <div class="content">
+
+      <!-- OVERVIEW -->
+      <div class="view active" id="v-overview">
+        <div class="page-title fu">VISÃO GERAL</div>
+        <div class="page-sub fu">Semana de 01 a 07 de Abril de 2026</div>
+        <div class="kpis">
+          <div class="kpi fu" style="--accent:var(--lime)"><div class="kpi-label">Taxa de Acerto</div><div class="kpi-val c-lime">87%</div><div class="kpi-sub">↑ +3% vs semana anterior</div></div>
+          <div class="kpi fu d1" style="--accent:var(--cyan)"><div class="kpi-label">Questões Respondidas</div><div class="kpi-val c-cyan">342</div><div class="kpi-sub">↑ +47 esta semana</div></div>
+          <div class="kpi fu d2" style="--accent:var(--gold)"><div class="kpi-label">Posição no Ranking</div><div class="kpi-val c-gold">#3</div><div class="kpi-sub">↑ Subiu 2 posições</div></div>
+          <div class="kpi fu d3" style="--accent:var(--coral)"><div class="kpi-label">Horas de Estudo</div><div class="kpi-val c-coral">24h</div><div class="kpi-sub">Meta: 28h/semana</div></div>
+          <div class="kpi fu d4" style="--accent:var(--violet)"><div class="kpi-label">Sequência</div><div class="kpi-val c-violet">12🔥</div><div class="kpi-sub">Recorde: 18 dias</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card fu">
+            <div class="card-title">📊 Acertos por Dia (Últimos 7 dias)</div>
+            <div class="chart-bars" id="weekChart"></div>
+            <div class="chart-x" id="weekLabels"></div>
+          </div>
+          <div class="card fu d1">
+            <div class="card-title">📚 Por Matéria</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;"><span>Física</span><span class="c-lime">91%</span></div><div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;"><div style="width:91%;height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));border-radius:4px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;"><span>Algoritmos</span><span class="c-cyan">78%</span></div><div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;"><div style="width:78%;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:4px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;"><span>Banco de Dados</span><span class="c-gold">64%</span></div><div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;"><div style="width:64%;height:100%;background:linear-gradient(90deg,var(--gold),var(--coral));border-radius:4px;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;"><span>Cálculo I</span><span class="c-coral">55%</span></div><div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;"><div style="width:55%;height:100%;background:linear-gradient(90deg,var(--coral),#FF4081);border-radius:4px;"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card fu">
+          <div class="card-title">💡 Insights da IA</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+            <div style="background:rgba(181,255,45,.08);border:1px solid rgba(181,255,45,.15);border-radius:10px;padding:14px;"><div style="font-weight:700;color:var(--lime);margin-bottom:6px;">🎯 Ponto Forte</div><div style="font-size:14px;color:var(--text2);">Sua performance em Física está excelente. Continue praticando para manter o 1º lugar na matéria.</div></div>
+            <div style="background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.15);border-radius:10px;padding:14px;"><div style="font-weight:700;color:var(--coral);margin-bottom:6px;">⚠️ Atenção</div><div style="font-size:14px;color:var(--text2);">Cálculo I está abaixo da sua média. Recomendamos 2h extras por semana nesta matéria.</div></div>
+            <div style="background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.15);border-radius:10px;padding:14px;"><div style="font-weight:700;color:var(--cyan);margin-bottom:6px;">📈 Tendência</div><div style="font-size:14px;color:var(--text2);">Seu progresso semanal está acima da média da turma em 15%. Você está no caminho certo!</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMPO -->
+      <div class="view" id="v-tempo">
+        <div class="page-title fu">ANÁLISE DE TEMPO</div>
+        <div class="page-sub fu">Distribuição das suas horas de estudo</div>
+        <div class="kpis" style="margin-bottom:28px;">
+          <div class="kpi fu" style="--accent:var(--lime)"><div class="kpi-label">Total esta semana</div><div class="kpi-val c-lime">24h</div></div>
+          <div class="kpi fu d1" style="--accent:var(--cyan)"><div class="kpi-label">Média diária</div><div class="kpi-val c-cyan">3h26</div></div>
+          <div class="kpi fu d2" style="--accent:var(--gold)"><div class="kpi-label">Matéria mais estudada</div><div class="kpi-val c-gold" style="font-size:22px;">Algoritmos</div></div>
+          <div class="kpi fu d3" style="--accent:var(--coral)"><div class="kpi-label">Horário pico</div><div class="kpi-val c-coral">20-22h</div></div>
+        </div>
+        <div class="card fu">
+          <div class="card-title">⏱️ Tempo por Matéria</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:8px;"><span>Algoritmos</span><span class="c-cyan">8h 30min</span></div><div style="height:12px;background:var(--bg3);border-radius:6px;overflow:hidden;"><div style="width:71%;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:6px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:8px;"><span>Física</span><span class="c-lime">6h 15min</span></div><div style="height:12px;background:var(--bg3);border-radius:6px;overflow:hidden;"><div style="width:52%;height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));border-radius:6px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:8px;"><span>Cálculo I</span><span class="c-coral">5h 00min</span></div><div style="height:12px;background:var(--bg3);border-radius:6px;overflow:hidden;"><div style="width:42%;height:100%;background:linear-gradient(90deg,var(--coral),#FF4081);border-radius:6px;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:8px;"><span>Banco de Dados</span><span class="c-gold">4h 15min</span></div><div style="height:12px;background:var(--bg3);border-radius:6px;overflow:hidden;"><div style="width:35%;height:100%;background:linear-gradient(90deg,var(--gold),var(--coral));border-radius:6px;"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIFICULDADE -->
+      <div class="view" id="v-dificuldade">
+        <div class="page-title fu">MAPA DE DIFICULDADE</div>
+        <div class="page-sub fu">Quanto mais vermelho, mais atenção necessária</div>
+        <div class="diff-grid fu">
+          <div class="diff-card" style="background:linear-gradient(135deg,#00C851,#007AFF)"><div class="diff-subject">Física</div><div class="diff-score">91%</div><div class="diff-bar"><div class="diff-fill" style="width:91%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#007AFF,#6000DD)"><div class="diff-subject">Algoritmos</div><div class="diff-score">78%</div><div class="diff-bar"><div class="diff-fill" style="width:78%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#FFD700,#FF6B00)"><div class="diff-subject">Banco de Dados</div><div class="diff-score">64%</div><div class="diff-bar"><div class="diff-fill" style="width:64%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#FF6B00,#FF2D55)"><div class="diff-subject">Cálculo I</div><div class="diff-score">55%</div><div class="diff-bar"><div class="diff-fill" style="width:55%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#FF2D55,#C0006B)"><div class="diff-subject">Química</div><div class="diff-score">30%</div><div class="diff-bar"><div class="diff-fill" style="width:30%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#6000DD,#007AFF)"><div class="diff-subject">Álgebra Linear</div><div class="diff-score">45%</div><div class="diff-bar"><div class="diff-fill" style="width:45%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#00C851,#FFD700)"><div class="diff-subject">Redes</div><div class="diff-score">70%</div><div class="diff-bar"><div class="diff-fill" style="width:70%"></div></div></div>
+          <div class="diff-card" style="background:linear-gradient(135deg,#FF6B00,#FFD700)"><div class="diff-subject">Estatística</div><div class="diff-score">58%</div><div class="diff-bar"><div class="diff-fill" style="width:58%"></div></div></div>
+        </div>
+        <div class="card fu" style="margin-top:20px;">
+          <div class="card-title">⚠️ Tópicos Críticos (Requerem Atenção)</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(255,45,85,.08);border-radius:10px;border:1px solid rgba(255,45,85,.15)"><span style="font-size:24px;">🔴</span><div><div style="font-weight:700;">Química — Ligações Iônicas</div><div style="font-size:13px;color:var(--text2);">Apenas 20% de acerto nas últimas 15 questões.</div></div><button class="rc-btn" style="border-color:rgba(255,45,85,.3);color:var(--coral)" onclick="toast('🎮 Enviando para GeniUs...')">Praticar</button></div>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(255,107,0,.08);border-radius:10px;border:1px solid rgba(255,107,0,.15)"><span style="font-size:24px;">🟠</span><div><div style="font-weight:700;">Cálculo I — Integrais por Partes</div><div style="font-size:13px;color:var(--text2);">35% de acerto. Abaixo da sua média histórica.</div></div><button class="rc-btn" onclick="toast('🎮 Enviando para GeniUs...')">Praticar</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div class="view" id="v-historico">
+        <div class="page-title fu">HISTÓRICO DE EVOLUÇÃO</div>
+        <div class="page-sub fu">Sua jornada de aprendizado mês a mês</div>
+        <div class="card fu">
+          <div class="card-title">📈 Taxa de Acerto — Últimos 8 meses</div>
+          <div class="history-chart" id="histChart"></div>
+          <div style="display:flex;gap:3px;margin-top:4px;">
+            <div style="flex:1;font-size:10px;color:var(--text3);text-align:center;" id="histLabels"></div>
+          </div>
+        </div>
+        <div class="two-col" style="margin-top:20px;">
+          <div class="card fu d1">
+            <div class="card-title">🏆 Marcos Alcançados</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">🥇</span><div><div style="font-weight:700;">Primeiro top 3 no ranking</div><div style="font-size:13px;color:var(--text2);">Fevereiro 2026</div></div></div>
+              <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">🔥</span><div><div style="font-weight:700;">Sequência de 12 dias</div><div style="font-size:13px;color:var(--text2);">Março 2026</div></div></div>
+              <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:24px;">🎯</span><div><div style="font-weight:700;">100% em Física</div><div style="font-size:13px;color:var(--text2);">Março 2026</div></div></div>
+            </div>
+          </div>
+          <div class="card fu d2">
+            <div class="card-title">📅 Comparativo Mensal</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:8px;"><span style="font-weight:600;">Março 2026</span><span class="c-lime" style="font-weight:800;">87% ↑</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:8px;"><span style="font-weight:600;">Fevereiro 2026</span><span class="c-cyan" style="font-weight:800;">82%</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:8px;"><span style="font-weight:600;">Janeiro 2026</span><span class="c-gold" style="font-weight:800;">75%</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:8px;"><span style="font-weight:600;">Dezembro 2025</span><span class="c-coral" style="font-weight:800;">68%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RELATÓRIOS -->
+      <div class="view" id="v-relatorios">
+        <div class="page-title fu">RELATÓRIOS</div>
+        <div class="page-sub fu">Relatórios personalizados gerados por IA</div>
+        <div class="report-card fu"><div class="rc-icon">📊</div><div><div class="rc-title">Relatório Semanal — 01 a 07 Abril</div><div class="rc-desc">Análise completa do seu desempenho com insights e recomendações personalizadas.</div></div><button class="rc-btn" onclick="toast('📥 Relatório gerado!')">Gerar PDF</button></div>
+        <div class="report-card fu d1"><div class="rc-icon">📈</div><div><div class="rc-title">Relatório de Evolução Mensal</div><div class="rc-desc">Compare seu progresso mês a mês e veja quanto você evoluiu desde o início.</div></div><button class="rc-btn" onclick="toast('📥 Relatório gerado!')">Gerar PDF</button></div>
+        <div class="report-card fu d2"><div class="rc-icon">🗺️</div><div><div class="rc-title">Análise de Pontos Fracos</div><div class="rc-desc">Mapeamento detalhado das matérias e tópicos que precisam de mais atenção.</div></div><button class="rc-btn" onclick="toast('📥 Relatório gerado!')">Gerar PDF</button></div>
+        <div class="report-card fu d3"><div class="rc-icon">🎯</div><div><div class="rc-title">Plano de Estudos Personalizado</div><div class="rc-desc">Cronograma sugerido pela IA baseado nos seus dados de desempenho e objetivos.</div></div><button class="rc-btn" onclick="toast('📥 Plano gerado!')">Gerar Plano</button></div>
+      </div>
+
+      <!-- PERFIL -->
+      <div class="view" id="v-perfil">
+        <div class="page-title fu">PERFIL</div>
+        <div class="card fu" style="max-width:560px;">
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:28px;">
+            <div style="width:70px;height:70px;border-radius:12px;background:linear-gradient(135deg,var(--lime),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;color:#000;">A</div>
+            <div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;">ALEX ESTUDANTE</div><div style="color:var(--text2);font-size:14px;">alex@universidade.edu.br</div><div style="color:var(--lime);font-size:13px;font-weight:700;margin-top:4px;">📊 Nível Analytics 3 · 342 análises</div></div>
+          </div>
+          <div class="fg"><label>Nome</label><input type="text" value="Alex Estudante"></div>
+          <div class="fg"><label>Email</label><input type="email" value="alex@universidade.edu.br"></div>
+          <div class="fg"><label>Universidade</label><input type="text" value="Universidade Federal do Brasil"></div>
+          <button class="sub-btn" onclick="toast('✅ Perfil salvo!')">SALVAR ALTERAÇÕES</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let isDark=true;
+const days=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+const scores=[72,80,85,78,91,88,87];
+const months=['Set','Out','Nov','Dez','Jan','Fev','Mar','Abr'];
+const monthScores=[58,62,68,75,80,82,87,null];
+const colors=['#B5FF2D','#00F5FF','#7C3AED','#FF6B6B','#FFD700','#B5FF2D','#00F5FF','#FF6B6B'];
+
+function goPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goAuth(tab){goPage('auth');swTab(tab);}
+function login(){goPage('dashboard');buildCharts();toast('🎉 Bem-vindo ao GLevel!');}
+function swTab(t){document.getElementById('f-li').style.display=t==='li'?'block':'none';document.getElementById('f-su').style.display=t==='su'?'block':'none';document.getElementById('t-li').classList.toggle('active',t==='li');document.getElementById('t-su').classList.toggle('active',t==='su');}
+function toggleTheme(){isDark=!isDark;document.body.classList.toggle('light',!isDark);document.querySelectorAll('.theme-btn').forEach(b=>b.textContent=isDark?'🌙':'☀️');}
+function sv(v){document.querySelectorAll('.view').forEach(d=>d.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('v-'+v).classList.add('active');}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.getElementById('toasts').appendChild(t);setTimeout(()=>t.remove(),3000);}
+
+function buildCharts(){
+  // Week chart
+  const wc=document.getElementById('weekChart');
+  const wl=document.getElementById('weekLabels');
+  if(!wc)return;
+  wc.innerHTML='';wl.innerHTML='';
+  const maxS=Math.max(...scores);
+  days.forEach((d,i)=>{
+    const col=document.createElement('div');col.className='cb';
+    col.style.cssText=`height:${(scores[i]/maxS)*120}px;background:linear-gradient(180deg,${colors[i%colors.length]},${colors[(i+1)%colors.length]});`;
+    col.title=`${d}: ${scores[i]}%`;
+    wc.appendChild(col);
+    const lbl=document.createElement('div');lbl.className='cx-item';lbl.textContent=d;wl.appendChild(lbl);
+  });
+  // History chart
+  const hc=document.getElementById('histChart');
+  const hl=document.getElementById('histLabels');
+  if(!hc)return;
+  hc.innerHTML='';hl.innerHTML='';
+  const maxM=Math.max(...monthScores.filter(Boolean));
+  months.forEach((m,i)=>{
+    const col=document.createElement('div');col.className='hc-col';
+    const bar=document.createElement('div');bar.className='hc-bar';
+    const h=monthScores[i]?(monthScores[i]/maxM)*140:0;
+    bar.style.cssText=`height:${h}px;background:${monthScores[i]?`linear-gradient(180deg,${colors[i%colors.length]},${colors[(i+2)%colors.length]})`:colors[i%colors.length]};opacity:${monthScores[i]?1:.3}`;
+    const lbl=document.createElement('div');lbl.className='hc-label';lbl.textContent=m;
+    col.appendChild(bar);col.appendChild(lbl);hc.appendChild(col);
+  });
+}
+</script>
+</body>
+</html>

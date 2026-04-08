@@ -1,0 +1,75 @@
+# 📊 GLevel — Learning Analytics System
+
+## 📌 Overview
+GLevel is a data-driven analytics platform that complements GeniUs by tracking and analyzing user study behavior.
+
+It transforms raw study data into meaningful insights through interactive dashboards.
+
+---
+
+## 🎯 Objectives
+- Monitor study time
+- Identify learning gaps
+- Provide personalized insights
+- Support data-driven study strategies
+
+---
+
+## 🖥️ Web Version
+
+### Features
+- Interactive dashboards
+- Performance graphs
+- Subject comparison
+- Progress tracking
+
+### Technologies
+- Python (data processing)
+- Power BI / Streamlit
+- SQLite / Firebase
+
+---
+
+## 📱 Mobile Version
+
+### Features
+- Simplified dashboards
+- Quick performance insights
+- Mobile-friendly charts
+
+### Differences from Web
+- Reduced data density
+- Focus on key metrics
+- Faster navigation
+
+---
+
+## 📊 Data Flow
+GeniUs Data → API → GLevel Processing → Visualization Dashboard
+
+---
+
+## 🧠 Analytics Engine
+
+- Time tracking per subject
+- Difficulty mapping
+- Performance trends
+- Predictive insights (future)
+
+---
+
+## 🚀 Future Improvements
+
+- AI-based recommendations
+- Real-time sync with GeniUs
+- Advanced predictive analytics
+- Custom study plans
+
+---
+
+## 🏆 Key Highlights
+
+- Data-driven learning approach
+- Integration with GeniUs
+- Interactive visualization
+- Scalable analytics system
