@@ -245,18 +245,18 @@ input:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(181,255,45,.12);}
       <button class="tab active" id="t-li" onclick="swTab('li')">Entrar</button>
       <button class="tab" id="t-su" onclick="swTab('su')">Cadastrar</button>
     </div>
-    <div id="f-li" style="width:100%">
-      <div class="fg"><label>Email</label><input type="email" placeholder="seu@email.com"></div>
-      <div class="fg"><label>Senha</label><input type="password" placeholder="••••••••"></div>
-      <button class="sub-btn" onclick="login()">ACESSAR DASHBOARD →</button>
-    </div>
-    <div id="f-su" style="width:100%;display:none">
-      <div class="fg"><label>Nome</label><input type="text" placeholder="Seu nome"></div>
-      <div class="fg"><label>Email</label><input type="email" placeholder="seu@email.com"></div>
-      <div class="fg"><label>Universidade</label><input type="text" placeholder="Nome da universidade"></div>
-      <div class="fg"><label>Senha</label><input type="password" placeholder="Mínimo 8 caracteres"></div>
-      <button class="sub-btn" onclick="login()">CRIAR CONTA GRÁTIS 📊</button>
-    </div>
+        <div id="f-li" style="width:100%">
+          <div class="fg"><label>Email</label><input type="email" id="login-email" placeholder="seu@email.com" value="alex@universidade.edu.br"></div>
+          <div class="fg"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••" value="demo1234"></div>
+          <button class="sub-btn" onclick="doLogin()">ACESSAR DASHBOARD →</button>
+        </div>
+        <div id="f-su" style="width:100%;display:none">
+          <div class="fg"><label>Nome</label><input type="text" id="reg-name" placeholder="Seu nome"></div>
+          <div class="fg"><label>Email</label><input type="email" id="reg-email" placeholder="seu@email.com"></div>
+          <div class="fg"><label>Universidade</label><input type="text" id="reg-uni" placeholder="Nome da universidade"></div>
+          <div class="fg"><label>Senha</label><input type="password" id="reg-pass" placeholder="Mínimo 8 caracteres"></div>
+          <button class="sub-btn" onclick="doRegister()">CRIAR CONTA GRÁTIS 📊</button>
+        </div>
   </div>
 </div>
 
@@ -429,28 +429,70 @@ input:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(181,255,45,.12);}
 </div>
 
 <script>
+const API_BASE = window.location.origin;
 let isDark=true;
-const days=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-const scores=[72,80,85,78,91,88,87];
-const months=['Set','Out','Nov','Dez','Jan','Fev','Mar','Abr'];
-const monthScores=[58,62,68,75,80,82,87,null];
+let currentStudent = null;
 const colors=['#B5FF2D','#00F5FF','#7C3AED','#FF6B6B','#FFD700','#B5FF2D','#00F5FF','#FF6B6B'];
 
 function goPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function goAuth(tab){goPage('auth');swTab(tab);}
-function login(){goPage('dashboard');buildCharts();toast('🎉 Bem-vindo ao GLevel!');}
 function swTab(t){document.getElementById('f-li').style.display=t==='li'?'block':'none';document.getElementById('f-su').style.display=t==='su'?'block':'none';document.getElementById('t-li').classList.toggle('active',t==='li');document.getElementById('t-su').classList.toggle('active',t==='su');}
 function toggleTheme(){isDark=!isDark;document.body.classList.toggle('light',!isDark);document.querySelectorAll('.theme-btn').forEach(b=>b.textContent=isDark?'🌙':'☀️');}
 function sv(v){document.querySelectorAll('.view').forEach(d=>d.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('v-'+v).classList.add('active');}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.getElementById('toasts').appendChild(t);setTimeout(()=>t.remove(),3000);}
 
-function buildCharts(){
-  // Week chart
+async function doLogin(){
+  const email=document.getElementById('login-email').value;
+  const pass=document.getElementById('login-pass').value;
+  try{
+    const res=await fetch(API_BASE+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    if(!res.ok){const err=await res.json();toast('❌ '+err.detail);return;}
+    currentStudent=await res.json();
+    goPage('dashboard');loadDashboardData();toast('🎉 Bem-vindo ao GLevel, '+currentStudent.name+'!');
+  }catch(e){toast('❌ Erro de conexão com o servidor');console.error(e);}
+}
+
+async function doRegister(){
+  const name=document.getElementById('reg-name').value;
+  const email=document.getElementById('reg-email').value;
+  const uni=document.getElementById('reg-uni').value;
+  const pass=document.getElementById('reg-pass').value;
+  if(!name||!email||!pass){toast('❌ Preencha todos os campos');return;}
+  try{
+    const res=await fetch(API_BASE+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,university:uni,password:pass})});
+    if(!res.ok){const err=await res.json();toast('❌ '+err.detail);return;}
+    currentStudent=await res.json();
+    goPage('dashboard');loadDashboardData();toast('🎉 Conta criada! Bem-vindo, '+currentStudent.name+'!');
+  }catch(e){toast('❌ Erro de conexão com o servidor');console.error(e);}
+}
+
+async function loadDashboardData(){
+  if(!currentStudent)return;
+  const sid=currentStudent.id;
+  try{
+    const [overview,dailyScores,subjectPerf]=await Promise.all([
+      fetch(API_BASE+'/api/students/'+sid+'/dashboard/overview').then(r=>r.json()),
+      fetch(API_BASE+'/api/students/'+sid+'/dashboard/daily-scores').then(r=>r.json()),
+      fetch(API_BASE+'/api/students/'+sid+'/dashboard/subject-performance').then(r=>r.json()),
+    ]);
+    // Update KPIs
+    document.querySelectorAll('.kpi-val')[0].textContent=overview.accuracy_rate.toFixed(0)+'%';
+    document.querySelectorAll('.kpi-val')[1].textContent=overview.total_questions;
+    document.querySelectorAll('.kpi-val')[3].textContent=overview.study_hours+'h';
+    document.querySelectorAll('.kpi-val')[4].textContent=overview.streak_days+'🔥';
+    // Build charts
+    buildCharts(dailyScores);
+  }catch(e){console.error('Dashboard load error:',e);buildCharts(null);}
+}
+
+function buildCharts(dailyScores){
   const wc=document.getElementById('weekChart');
   const wl=document.getElementById('weekLabels');
   if(!wc)return;
   wc.innerHTML='';wl.innerHTML='';
-  const maxS=Math.max(...scores);
+  const scores=dailyScores?dailyScores.map(d=>d.score):[72,80,85,78,91,88,87];
+  const days=dailyScores?dailyScores.map(d=>d.day):['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const maxS=Math.max(...scores,1);
   days.forEach((d,i)=>{
     const col=document.createElement('div');col.className='cb';
     col.style.cssText=`height:${(scores[i]/maxS)*120}px;background:linear-gradient(180deg,${colors[i%colors.length]},${colors[(i+1)%colors.length]});`;
@@ -458,11 +500,11 @@ function buildCharts(){
     wc.appendChild(col);
     const lbl=document.createElement('div');lbl.className='cx-item';lbl.textContent=d;wl.appendChild(lbl);
   });
-  // History chart
   const hc=document.getElementById('histChart');
-  const hl=document.getElementById('histLabels');
   if(!hc)return;
-  hc.innerHTML='';hl.innerHTML='';
+  const months=['Set','Out','Nov','Dez','Jan','Fev','Mar','Abr'];
+  const monthScores=[58,62,68,75,80,82,87,null];
+  hc.innerHTML='';
   const maxM=Math.max(...monthScores.filter(Boolean));
   months.forEach((m,i)=>{
     const col=document.createElement('div');col.className='hc-col';
