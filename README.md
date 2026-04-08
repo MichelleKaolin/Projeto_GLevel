@@ -1,31 +1,35 @@
 # GLevel
 
-## 📌 Sobre o Projeto
-O **GLevel** é um aplicativo complementar ao **GeniUs**, projetado para monitorar e analisar o desempenho dos usuários em seus estudos. Ele gera dashboards interativos que ajudam a visualizar o tempo dedicado a cada matéria, identifica áreas de maior dificuldade e acompanha a evolução ao longo do tempo. Com ele, os estudantes podem entender melhor seus padrões de aprendizado e otimizar seus estudos de forma estratégica.
+## 📌 About the Project
 
-## 🎯 Principais Funcionalidades
-- **Análise de Tempo**: Mede o tempo investido em cada matéria.
-- **Mapa de Dificuldade**: Identifica as matérias e os tópicos onde o usuário tem maior dificuldade.
-- **Histórico de Evolução**: Exibe o progresso do estudante ao longo do tempo.
-- **Relatórios Personalizados**: Gera insights baseados nos dados coletados para otimizar a estratégia de estudos.
-- **Sincronização com o GeniUs**: Importa dados de desempenho do GeniUs para gerar análises mais precisas.
+**GLevel** is a complementary application to **GeniUs**, designed to monitor and analyze users' performance in their studies. It generates interactive dashboards that help visualize the time spent on each subject, identify areas of greater difficulty, and track progress over time. With it, students can better understand their learning patterns and optimize their study strategies effectively.
 
-## 🛠️ Tecnologias Utilizadas
-- **Python** para processamento e análise de dados
-- **Power BI / Streamlit** para visualização e dashboards interativos
-- **SQLite / Firebase** para armazenamento de histórico de desempenho
-- **API REST** para comunicação com o GeniUs
+## 🎯 Key Features
 
-## 🚀 Como Usar
-1. **Conecte sua conta do GeniUs** para importar seus dados de desempenho.
-2. **Visualize seu progresso** em dashboards interativos.
-3. **Analise suas dificuldades** e ajuste seu plano de estudos.
-4. **Acompanhe sua evolução** com relatórios detalhados ao longo do tempo.
+* **Time Analysis**: Measures the time invested in each subject.
+* **Difficulty Mapping**: Identifies subjects and topics where the user struggles the most.
+* **Progress Tracking**: Displays the student's progress over time.
+* **Personalized Reports**: Generates insights based on collected data to improve study strategies.
+* **GeniUs Integration**: Imports performance data from GeniUs to provide more accurate analysis.
 
-## 🔗 Contribuição
-Quer contribuir para o GLevel? Fique à vontade para abrir um Pull Request ou sugerir melhorias na aba de Issues.
+## 🛠️ Technologies Used
+
+* **Python** for data processing and analysis
+* **Power BI / Streamlit** for data visualization and interactive dashboards
+* **SQLite / Firebase** for storing performance history
+* **REST API** for communication with GeniUs
+
+## 🚀 How to Use
+
+1. **Connect your GeniUs account** to import your performance data.
+2. **View your progress** through interactive dashboards.
+3. **Analyze your weaknesses** and adjust your study plan.
+4. **Track your improvement** with detailed reports over time.
+
+## 🔗 Contribution
+
+Want to contribute to GLevel? Feel free to open a Pull Request or suggest improvements in the Issues tab.
 
 ---
 
-GLevel é parte do **universo GeniUs**, promovendo aprendizado eficiente e baseado em dados! 📊🚀
-
+GLevel is part of the **GeniUs ecosystem**, promoting efficient, data-driven learning! 📊🚀
