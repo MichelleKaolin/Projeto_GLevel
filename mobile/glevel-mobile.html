@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GLevel Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lime:#B5FF2D;--cyan:#00F5FF;--violet:#7C3AED;--coral:#FF6B6B;--gold:#FFD700;
+  --bg:#050508;--bg2:#0C0C14;--bg3:#121220;--card:#161624;--border:rgba(255,255,255,0.06);
+  --text:#F2F2FF;--text2:#7070A0;--text3:#303055;
+  --safe-bottom:env(safe-area-inset-bottom,20px);
+}
+body.light{
+  --bg:#F8F8FF;--bg2:#F0F0FF;--bg3:#E8E8F8;--card:#FFFFFF;--border:rgba(0,0,60,0.07);
+  --text:#080820;--text2:#5050A0;--text3:#B0B0D0;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#000;color:var(--text);}
+
+/* SHELL */
+.shell{
+  width:390px;height:844px;margin:0 auto;background:var(--bg);
+  border-radius:54px;overflow:hidden;position:relative;
+  box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 0 12px #1a1a1a,0 0 0 14px #2a2a2a;
+  display:flex;flex-direction:column;
+}
+.island{width:126px;height:37px;background:#000;border-radius:0 0 22px 22px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;justify-content:center;gap:8px;}
+.island-cam{width:12px;height:12px;border-radius:50%;background:#1a1a1a;border:2px solid #333;}
+.island-dot{width:8px;height:8px;border-radius:50%;background:#1a1a1a;}
+.statusbar{height:54px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 28px 8px;flex-shrink:0;position:relative;z-index:10;}
+.sb-time{font-size:15px;font-weight:700;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+.sb-icons{display:flex;align-items:center;gap:6px;font-size:13px;}
+.app-content{flex:1;overflow:hidden;position:relative;}
+.screen{position:absolute;inset:0;overflow-y:auto;display:none;flex-direction:column;}
+.screen.active{display:flex;}
+.screen::-webkit-scrollbar{display:none;}
+.bottom-nav{height:calc(60px + var(--safe-bottom));background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding:0 8px calc(var(--safe-bottom)+4px);flex-shrink:0;position:relative;z-index:50;}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 8px;border-radius:14px;cursor:pointer;transition:all .2s;font-size:9px;font-weight:800;color:var(--text3);flex:1;text-align:center;letter-spacing:.5px;text-transform:uppercase;}
+.bn-item.active{color:var(--lime);}
+.bn-icon{font-size:22px;transition:transform .2s;}
+.bn-item.active .bn-icon{transform:scale(1.1);}
+.bn-item:active .bn-icon{transform:scale(.88);}
+
+/* SPLASH */
+#splash{
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 320px 280px at 80% 20%,rgba(124,58,237,.2),transparent),
+             radial-gradient(ellipse 280px 260px at 15% 80%,rgba(181,255,45,.12),transparent),var(--bg);
+}
+.sp-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:4px;margin-bottom:6px;}
+.sp-logo em{font-style:normal;color:var(--lime);}
+.sp-tag{color:var(--text2);font-size:16px;margin-bottom:64px;font-weight:500;}
+.sp-loader{width:56px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.sp-bar{height:100%;background:linear-gradient(90deg,var(--lime),var(--cyan));border-radius:3px;animation:spload 2.3s ease forwards;}
+@keyframes spload{from{width:0}to{width:100%}}
+
+/* ONBOARDING */
+#onboard{background:var(--bg);overflow:hidden;}
+.ob-slides{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);width:300%;}
+.ob-slide{width:33.333%;padding:52px 32px 28px;display:flex;flex-direction:column;align-items:center;text-align:center;flex-shrink:0;}
+.ob-emoji{font-size:82px;margin-bottom:28px;animation:fl 3.5s ease-in-out infinite;}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.ob-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;margin-bottom:14px;}
+.ob-desc{font-size:16px;color:var(--text2);line-height:1.6;max-width:280px;}
+.ob-dots{display:flex;gap:8px;margin:auto 0 28px;}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .35s;}
+.ob-dot.active{width:28px;border-radius:4px;background:var(--lime);}
+.ob-cta{width:calc(100% - 64px);padding:18px;border-radius:14px;background:var(--lime);color:#000;font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:800;border:none;cursor:pointer;margin-bottom:8px;box-shadow:0 8px 28px rgba(181,255,45,.4);letter-spacing:.3px;}
+.ob-skip{background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:10px;}
+
+/* AUTH */
+#auth{background:var(--bg);}
+.auth-top{padding:52px 28px 22px;text-align:center;}
+.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;margin-bottom:6px;}
+.auth-logo em{font-style:normal;color:var(--lime);}
+.auth-sub{color:var(--text2);font-size:15px;}
+.auth-tabs{display:flex;margin:0 28px 24px;background:var(--bg3);border-radius:10px;padding:4px;}
+.at-btn{flex:1;padding:12px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer;border:none;background:transparent;color:var(--text2);transition:all .2s;}
+.at-btn.active{background:var(--card);color:var(--text);}
+.auth-form{padding:0 28px 28px;}
+.auth-form.hide{display:none;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:10px;font-weight:800;color:var(--text2);margin-bottom:8px;letter-spacing:1.2px;text-transform:uppercase;}
+.fg input{width:100%;padding:15px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;outline:none;transition:all .2s;}
+.fg input:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(181,255,45,.12);}
+.auth-cta{width:100%;padding:17px;border-radius:10px;background:var(--lime);color:#000;font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(181,255,45,.35);margin-top:4px;letter-spacing:.3px;}
+.auth-cta:active{transform:scale(.97);}
+
+/* TOPBAR */
+.topbar{padding:12px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;background:var(--bg);}
+.tb-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+.tb-logo em{font-style:normal;color:var(--lime);}
+.tb-r{display:flex;gap:10px;}
+.icon-btn{width:36px;height:36px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;}
+.scroll{flex:1;overflow-y:auto;padding:0 20px 100px;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* HOME / OVERVIEW */
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;margin-bottom:4px;}
+.page-sub{font-size:13px;color:var(--text2);margin-bottom:20px;}
+
+/* KPIs */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;position:relative;overflow:hidden;transition:all .2s;}
+.kpi:active{transform:scale(.97);}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--accent);}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:1px;line-height:1;}
+.kpi-label{font-size:10px;font-weight:800;color:var(--text2);margin-top:6px;text-transform:uppercase;letter-spacing:.8px;}
+.kpi-change{font-size:11px;color:var(--lime);font-weight:700;margin-top:4px;}
+
+/* Insight card */
+.insight-card{border-radius:18px;padding:18px;margin-bottom:14px;}
+.ic-tag{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;opacity:.8;}
+.ic-text{font-size:14px;font-weight:600;line-height:1.5;}
+
+/* Chart */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:14px;}
+.cc-title{font-weight:800;font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.bar-chart-h{display:flex;flex-direction:column;gap:10px;}
+.bch-row{display:flex;align-items:center;gap:10px;}
+.bch-label{font-size:12px;font-weight:700;color:var(--text2);width:80px;flex-shrink:0;white-space:nowrap;}
+.bch-track{flex:1;height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;}
+.bch-fill{height:100%;border-radius:5px;transition:width .6s ease;}
+.bch-val{font-size:12px;font-weight:800;width:36px;text-align:right;}
+
+/* Difficulty grid */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.diff-card{border-radius:18px;padding:18px;cursor:pointer;transition:all .25s;}
+.diff-card:active{transform:scale(.95);}
+.dc-sub{font-weight:800;font-size:14px;color:#fff;margin-bottom:4px;}
+.dc-score{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;color:rgba(255,255,255,.9);}
+.dc-bar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:8px;}
+.dc-fill{height:100%;border-radius:2px;background:rgba(255,255,255,.7);}
+
+/* History chart mobile */
+.hist-chart{display:flex;align-items:flex-end;gap:4px;height:120px;}
+.hc-col{flex:1;display:flex;flex-direction:column;align-items:center;}
+.hc-bar{width:100%;border-radius:4px 4px 0 0;transition:height .6s ease;}
+.hc-label{font-size:9px;color:var(--text3);margin-top:5px;font-weight:700;}
+
+/* Reports */
+.report-item{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .2s;}
+.report-item:active{transform:scale(.98);border-color:var(--lime);}
+.ri-icon{font-size:32px;flex-shrink:0;}
+.ri-body{flex:1;}
+.ri-title{font-weight:800;font-size:14px;margin-bottom:3px;}
+.ri-sub{font-size:12px;color:var(--text2);}
+.ri-arrow{font-size:18px;color:var(--text3);}
+
+/* Profile */
+.pf-top{background:linear-gradient(160deg,rgba(181,255,45,.1) 0%,var(--bg) 100%);padding:24px 24px 28px;text-align:center;}
+.pf-av{width:76px;height:76px;border-radius:18px;background:linear-gradient(135deg,var(--lime),var(--cyan));margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#000;}
+.pf-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:4px;}
+.pf-tag{font-size:13px;color:var(--lime);font-weight:700;}
+.pf-stats{display:flex;border-top:1px solid var(--border);margin-top:18px;}
+.pfs-i{flex:1;padding:14px 0;text-align:center;}
+.pfs-i+.pfs-i{border-left:1px solid var(--border);}
+.pfs-v{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
+.pfs-l{font-size:10px;color:var(--text2);margin-top:2px;font-weight:700;}
+.pf-sec{padding:18px 22px 0;}
+.pf-sec-t{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-bottom:14px;}
+.pf-row{display:flex;align-items:center;gap:14px;padding:15px;background:var(--card);border-radius:14px;border:1px solid var(--border);margin-bottom:10px;cursor:pointer;transition:all .2s;}
+.pf-row:active{transform:scale(.97);}
+.pr-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.pr-body{flex:1;}
+.pr-t{font-weight:700;font-size:14px;}
+.pr-s{font-size:12px;color:var(--text2);margin-top:2px;}
+.pr-a{font-size:18px;color:var(--text3);}
+.toggle-row{display:flex;align-items:center;gap:14px;padding:15px;background:var(--card);border-radius:14px;border:1px solid var(--border);margin-bottom:10px;}
+.toggle{width:50px;height:28px;border-radius:14px;background:var(--bg3);border:1px solid var(--border);cursor:pointer;position:relative;transition:background .3s;margin-left:auto;}
+.toggle.on{background:var(--lime);}
+.toggle-k{width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:transform .3s;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+.toggle.on .toggle-k{transform:translateX(22px);}
+
+/* Section title shared */
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;margin-bottom:14px;}
+
+/* Toasts */
+.toasts{position:fixed;bottom:calc(80px + var(--safe-bottom));left:50%;transform:translateX(-50%);z-index:999;pointer-events:none;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-size:14px;font-weight:700;white-space:nowrap;animation:toastIn .3s ease;box-shadow:0 8px 28px rgba(0,0,0,.4);}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fadeIn .4s ease forwards;}
+
+/* Colors */
+.c-lime{color:var(--lime);}
+.c-cyan{color:var(--cyan);}
+.c-coral{color:var(--coral);}
+.c-gold{color:var(--gold);}
+.c-violet{color:var(--violet);}
+
+@media(max-width:420px){
+  .shell{width:100vw;height:100dvh;border-radius:0;box-shadow:none;}
+  body{background:var(--bg);}
+  .island{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="island"><div class="island-dot"></div><div class="island-cam"></div></div>
+  <div class="statusbar">
+    <span class="sb-time" id="sbTime">9:41</span>
+    <div class="sb-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+  </div>
+  <div class="app-content">
+
+    <!-- SPLASH -->
+    <div class="screen active" id="splash">
+      <div class="sp-logo"><em>G</em>LEVEL</div>
+      <div class="sp-tag">Analise. Evolua. Domine.</div>
+      <div class="sp-loader"><div class="sp-bar"></div></div>
+    </div>
+
+    <!-- ONBOARDING -->
+    <div class="screen" id="onboard">
+      <div class="ob-slides" id="obSlides">
+        <div class="ob-slide">
+          <div class="ob-emoji">📊</div>
+          <div class="ob-title" style="color:var(--lime)">Dashboard Inteligente</div>
+          <div class="ob-desc">Visualize seu desempenho com gráficos e KPIs atualizados em tempo real.</div>
+        </div>
+        <div class="ob-slide">
+          <div class="ob-emoji">🗺️</div>
+          <div class="ob-title" style="color:var(--cyan)">Mapa de Dificuldades</div>
+          <div class="ob-desc">Identifique os tópicos onde você mais erra e foque no que realmente importa.</div>
+        </div>
+        <div class="ob-slide">
+          <div class="ob-emoji">📈</div>
+          <div class="ob-title" style="color:var(--gold)">Evolua com Dados</div>
+          <div class="ob-desc">Relatórios personalizados pela IA para turbinar sua estratégia de estudos.</div>
+        </div>
+      </div>
+      <div class="ob-dots" id="obDots">
+        <div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+      </div>
+      <button class="ob-cta" id="obBtn" onclick="obNext()">Continuar →</button>
+      <button class="ob-skip" onclick="goAuth()">Pular</button>
+    </div>
+
+    <!-- AUTH -->
+    <div class="screen" id="auth">
+      <div class="auth-top">
+        <div class="auth-logo"><em>G</em>LEVEL</div>
+        <div class="auth-sub">Dashboard de desempenho para estudantes</div>
+      </div>
+      <div class="auth-tabs">
+        <button class="at-btn active" id="at-li" onclick="authTab('li')">Entrar</button>
+        <button class="at-btn" id="at-su" onclick="authTab('su')">Cadastrar</button>
+      </div>
+      <div class="auth-form" id="ab-li">
+        <div class="fg"><label>Email</label><input type="email" placeholder="seu@email.com"></div>
+        <div class="fg"><label>Senha</label><input type="password" placeholder="••••••••"></div>
+        <button class="auth-cta" onclick="doLogin()">ACESSAR DASHBOARD →</button>
+      </div>
+      <div class="auth-form hide" id="ab-su">
+        <div class="fg"><label>Nome</label><input type="text" placeholder="Seu nome completo"></div>
+        <div class="fg"><label>Email</label><input type="email" placeholder="seu@email.com"></div>
+        <div class="fg"><label>Universidade</label><input type="text" placeholder="Nome da universidade"></div>
+        <div class="fg"><label>Senha</label><input type="password" placeholder="Mín. 8 caracteres"></div>
+        <button class="auth-cta" onclick="doLogin()">CRIAR CONTA GRÁTIS 📊</button>
+      </div>
+    </div>
+
+    <!-- HOME / OVERVIEW -->
+    <div class="screen" id="home">
+      <div class="topbar">
+        <div class="tb-logo"><em>G</em>LEVEL</div>
+        <div class="tb-r">
+          <div class="icon-btn" onclick="toggleTheme()">🌙</div>
+          <div class="icon-btn">🔔</div>
+        </div>
+      </div>
+      <div class="scroll">
+        <div class="page-title fi">VISÃO GERAL</div>
+        <div class="page-sub fi">Semana de 01–07 Abril 2026</div>
+        <div class="kpi-grid fi">
+          <div class="kpi" style="--accent:var(--lime)"><div class="kpi-val c-lime">87%</div><div class="kpi-label">Taxa de Acerto</div><div class="kpi-change">↑ +3% esta semana</div></div>
+          <div class="kpi" style="--accent:var(--cyan)"><div class="kpi-val c-cyan">342</div><div class="kpi-label">Questões</div><div class="kpi-change">↑ +47 esta semana</div></div>
+          <div class="kpi" style="--accent:var(--gold)"><div class="kpi-val c-gold">#3</div><div class="kpi-label">Ranking</div><div class="kpi-change">↑ 2 posições</div></div>
+          <div class="kpi" style="--accent:var(--coral)"><div class="kpi-val c-coral">24h</div><div class="kpi-label">Estudo</div><div class="kpi-change">Meta: 28h/sem</div></div>
+        </div>
+        <div class="chart-card fi">
+          <div class="cc-title">📚 Por Matéria</div>
+          <div class="bar-chart-h" id="matChart"></div>
+        </div>
+        <div class="sec-h fi">💡 Insights da IA</div>
+        <div class="insight-card fi" style="background:rgba(181,255,45,.08);border:1px solid rgba(181,255,45,.15)">
+          <div class="ic-tag" style="color:var(--lime)">🎯 Ponto Forte</div>
+          <div class="ic-text">Física está excelente em 91%. Continue para manter o 1º lugar na matéria!</div>
+        </div>
+        <div class="insight-card fi" style="background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.15)">
+          <div class="ic-tag" style="color:var(--coral)">⚠️ Atenção</div>
+          <div class="ic-text">Cálculo I está em 55%. Recomendamos +2h extras por semana nesta matéria.</div>
+        </div>
+        <div class="insight-card fi" style="background:rgba(0,245,255,.08);border:1px solid rgba(0,245,255,.15)">
+          <div class="ic-tag" style="color:var(--cyan)">📈 Tendência</div>
+          <div class="ic-text">Seu progresso semanal está 15% acima da média da turma. Ótimo caminho!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIFFICULTY -->
+    <div class="screen" id="difficulty">
+      <div class="topbar">
+        <div class="tb-logo" style="font-size:18px"><em>G</em>LEVEL · Dificuldades</div>
+        <div class="icon-btn" onclick="toggleTheme()">🌙</div>
+      </div>
+      <div class="scroll">
+        <div class="page-sub fi">Quanto mais vermelho, mais atenção necessária</div>
+        <div class="diff-grid fi" id="diffGrid"></div>
+        <div class="chart-card fi">
+          <div class="cc-title">⚠️ Tópicos Críticos</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,45,85,.08);border-radius:12px;border:1px solid rgba(255,45,85,.15)"><span style="font-size:20px;">🔴</span><div style="flex:1"><div style="font-weight:800;font-size:14px;">Química — Ligações</div><div style="font-size:12px;color:var(--text2)">20% de acerto nas últimas 15 questões</div></div><button style="background:rgba(255,107,107,.15);color:var(--coral);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;" onclick="toast('🎮 Enviando ao GeniUs...')">Praticar</button></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,107,0,.08);border-radius:12px;border:1px solid rgba(255,107,0,.15)"><span style="font-size:20px;">🟠</span><div style="flex:1"><div style="font-weight:800;font-size:14px;">Cálculo — Integrais</div><div style="font-size:12px;color:var(--text2)">35% de acerto. Abaixo da sua média.</div></div><button style="background:rgba(181,255,45,.1);color:var(--lime);border:1px solid rgba(181,255,45,.15);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;" onclick="toast('🎮 Enviando ao GeniUs...')">Praticar</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="screen" id="history">
+      <div class="topbar">
+        <div class="tb-logo" style="font-size:18px"><em>G</em>LEVEL · Histórico</div>
+        <div class="icon-btn" onclick="toggleTheme()">🌙</div>
+      </div>
+      <div class="scroll">
+        <div class="page-sub fi">Sua evolução mês a mês</div>
+        <div class="chart-card fi">
+          <div class="cc-title">📈 Taxa de Acerto — 8 meses</div>
+          <div class="hist-chart" id="histChart"></div>
+          <div style="display:flex;margin-top:6px;" id="histLabels"></div>
+        </div>
+        <div class="chart-card fi">
+          <div class="cc-title">📅 Comparativo Mensal</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:10px;"><span style="font-weight:700;font-size:14px;">Março 2026</span><span class="c-lime" style="font-weight:800;">87% ↑</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:10px;"><span style="font-weight:700;font-size:14px;">Fevereiro 2026</span><span class="c-cyan" style="font-weight:800;">82%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:10px;"><span style="font-weight:700;font-size:14px;">Janeiro 2026</span><span class="c-gold" style="font-weight:800;">75%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg3);border-radius:10px;"><span style="font-weight:700;font-size:14px;">Dezembro 2025</span><span class="c-coral" style="font-weight:800;">68%</span></div>
+          </div>
+        </div>
+        <div class="chart-card fi">
+          <div class="cc-title">🏆 Marcos Alcançados</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🥇</span><div><div style="font-weight:700;font-size:14px">Primeiro top 3 no ranking</div><div style="font-size:12px;color:var(--text2)">Fevereiro 2026</div></div></div>
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🔥</span><div><div style="font-weight:700;font-size:14px">Sequência de 12 dias</div><div style="font-size:12px;color:var(--text2)">Março 2026</div></div></div>
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:24px">🎯</span><div><div style="font-weight:700;font-size:14px">100% em Física</div><div style="font-size:12px;color:var(--text2)">Março 2026</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="screen" id="reports">
+      <div class="topbar">
+        <div class="tb-logo" style="font-size:18px"><em>G</em>LEVEL · Relatórios</div>
+        <div class="icon-btn" onclick="toggleTheme()">🌙</div>
+      </div>
+      <div class="scroll">
+        <div class="page-sub fi">Relatórios gerados por IA com base nos seus dados</div>
+        <div class="report-item fi" onclick="toast('📥 Relatório gerado!')"><div class="ri-icon">📊</div><div class="ri-body"><div class="ri-title">Relatório Semanal</div><div class="ri-sub">01–07 Abril · Análise completa</div></div><div class="ri-arrow">›</div></div>
+        <div class="report-item fi" onclick="toast('📥 Gerado!')"><div class="ri-icon">📈</div><div class="ri-body"><div class="ri-title">Evolução Mensal</div><div class="ri-sub">Compare mês a mês seu progresso</div></div><div class="ri-arrow">›</div></div>
+        <div class="report-item fi" onclick="toast('📥 Gerado!')"><div class="ri-icon">🗺️</div><div class="ri-body"><div class="ri-title">Pontos Fracos</div><div class="ri-sub">Matérias que precisam de atenção</div></div><div class="ri-arrow">›</div></div>
+        <div class="report-item fi" onclick="toast('🎯 Plano gerado!')"><div class="ri-icon">🎯</div><div class="ri-body"><div class="ri-title">Plano de Estudos IA</div><div class="ri-sub">Cronograma personalizado para você</div></div><div class="ri-arrow">›</div></div>
+        <div class="report-item fi" onclick="toast('📥 Gerado!')"><div class="ri-icon">⏱️</div><div class="ri-body"><div class="ri-title">Análise de Tempo</div><div class="ri-sub">Distribuição de horas por matéria</div></div><div class="ri-arrow">›</div></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen" id="profile">
+      <div class="scroll" style="padding:0 0 100px;">
+        <div class="pf-top fi">
+          <div class="pf-av">A</div>
+          <div class="pf-name">ALEX ESTUDANTE</div>
+          <div class="pf-tag">📊 Nível Analytics 3 · 342 análises</div>
+          <div class="pf-stats">
+            <div class="pfs-i"><div class="pfs-v c-lime">87%</div><div class="pfs-l">Acertos</div></div>
+            <div class="pfs-i"><div class="pfs-v c-gold">#3</div><div class="pfs-l">Ranking</div></div>
+            <div class="pfs-i"><div class="pfs-v c-coral">24h</div><div class="pfs-l">Semana</div></div>
+          </div>
+        </div>
+        <div class="pf-sec fi">
+          <div class="pf-sec-t">CONFIGURAÇÕES</div>
+          <div class="toggle-row">
+            <div class="pr-ico" style="background:rgba(181,255,45,.1)">🌙</div>
+            <div class="pr-body"><div class="pr-t">Modo Escuro</div></div>
+            <div class="toggle on" id="thToggle" onclick="toggleTheme()"><div class="toggle-k"></div></div>
+          </div>
+          <div class="pf-row" onclick="toast('🔔 Notificações')"><div class="pr-ico" style="background:rgba(0,245,255,.1)">🔔</div><div class="pr-body"><div class="pr-t">Notificações</div><div class="pr-s">Relatórios e alertas de meta</div></div><div class="pr-a">›</div></div>
+          <div class="pf-row" onclick="toast('🎯 Metas')"><div class="pr-ico" style="background:rgba(255,215,0,.1)">🎯</div><div class="pr-body"><div class="pr-t">Definir Metas</div><div class="pr-s">Horas semanais e taxa de acerto</div></div><div class="pr-a">›</div></div>
+          <div class="pf-row" onclick="toast('🔗 GeniUs conectado!')"><div class="pr-ico" style="background:rgba(255,107,0,.1)">🔗</div><div class="pr-body"><div class="pr-t">Sincronizar GeniUs</div><div class="pr-s">Importar dados de desempenho</div></div><div class="pr-a">›</div></div>
+        </div>
+        <div class="pf-sec fi" style="margin-top:16px;">
+          <div class="pf-sec-t">APPS GENIУС</div>
+          <div class="pf-row" onclick="toast('🎮 GeniUs...')"><div class="pr-ico" style="background:rgba(255,107,0,.1)">🎮</div><div class="pr-body"><div class="pr-t">GeniUs</div><div class="pr-s">Plataforma gamificada</div></div><div class="pr-a">›</div></div>
+          <div class="pf-row" onclick="toast('🎙️ GTalk...')"><div class="pr-ico" style="background:rgba(0,217,181,.1)">🎙️</div><div class="pr-body"><div class="pr-t">GTalk</div><div class="pr-s">Transcrição e leitura em voz</div></div><div class="pr-a">›</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav" id="bottomNav" style="display:none;">
+    <div class="bn-item active" id="bn-home" onclick="navTo('home')"><div class="bn-icon">📊</div>Geral</div>
+    <div class="bn-item" id="bn-difficulty" onclick="navTo('difficulty')"><div class="bn-icon">🗺️</div>Mapa</div>
+    <div class="bn-item" id="bn-history" onclick="navTo('history')"><div class="bn-icon">📈</div>Histórico</div>
+    <div class="bn-item" id="bn-reports" onclick="navTo('reports')"><div class="bn-icon">📋</div>Relatórios</div>
+    <div class="bn-item" id="bn-profile" onclick="navTo('profile')"><div class="bn-icon">👤</div>Perfil</div>
+  </div>
+  <div class="toasts" id="toasts"></div>
+</div>
+<script>
+let isDark=true,obIdx=0;
+const mats=[{name:'Física',val:91,color:'linear-gradient(90deg,#00C851,#007AFF)',c:'var(--lime)'},
+  {name:'Algoritmos',val:78,color:'linear-gradient(90deg,#007AFF,#6000DD)',c:'var(--cyan)'},
+  {name:'B. Dados',val:64,color:'linear-gradient(90deg,#FFD700,#FF6B00)',c:'var(--gold)'},
+  {name:'Cálculo I',val:55,color:'linear-gradient(90deg,#FF6B6B,#FF2D55)',c:'var(--coral)'}];
+const months=['Set','Out','Nov','Dez','Jan','Fev','Mar','Abr'];
+const mScores=[58,62,68,75,80,82,87,null];
+const diffData=[
+  {name:'Física',score:91,bg:'linear-gradient(135deg,#00C851,#007AFF)'},
+  {name:'Algoritmos',score:78,bg:'linear-gradient(135deg,#007AFF,#6000DD)'},
+  {name:'B. Dados',score:64,bg:'linear-gradient(135deg,#FFD700,#FF6B00)'},
+  {name:'Cálculo I',score:55,bg:'linear-gradient(135deg,#FF6B00,#FF2D55)'},
+  {name:'Química',score:30,bg:'linear-gradient(135deg,#FF2D55,#AA0060)'},
+  {name:'Álgebra',score:45,bg:'linear-gradient(135deg,#6000DD,#007AFF)'},
+  {name:'Redes',score:70,bg:'linear-gradient(135deg,#00C851,#FFD700)'},
+  {name:'Estatística',score:58,bg:'linear-gradient(135deg,#FF6B00,#FFD700)'},
+];
+
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const nav=['home','difficulty','history','reports','profile'];
+  document.getElementById('bottomNav').style.display=nav.includes(id)?'flex':'none';
+}
+function navTo(id){
+  goScreen(id);
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('bn-'+id);if(el)el.classList.add('active');
+}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.getElementById('toasts').appendChild(t);setTimeout(()=>t.remove(),2800);}
+function toggleTheme(){isDark=!isDark;document.body.classList.toggle('light',!isDark);document.querySelectorAll('.toggle').forEach(t=>t.classList.toggle('on',isDark));}
+function goAuth(){goScreen('auth');}
+function authTab(t){document.getElementById('ab-li').classList.toggle('hide',t!=='li');document.getElementById('ab-su').classList.toggle('hide',t!=='su');document.getElementById('at-li').classList.toggle('active',t==='li');document.getElementById('at-su').classList.toggle('active',t==='su');}
+function obNext(){obIdx++;if(obIdx>=3){goAuth();return;}document.getElementById('obSlides').style.transform=`translateX(-${obIdx*33.333}%)`;document.querySelectorAll('.ob-dot').forEach((d,i)=>d.classList.toggle('active',i===obIdx));if(obIdx===2)document.getElementById('obBtn').textContent='Começar agora 📊';}
+function doLogin(){buildCharts();goScreen('home');navTo('home');toast('🎉 Bem-vindo ao GLevel!');}
+
+function buildCharts(){
+  // mat chart
+  const mc=document.getElementById('matChart');
+  if(mc){mc.innerHTML='';mats.forEach(m=>{mc.innerHTML+=`<div class="bch-row"><div class="bch-label">${m.name}</div><div class="bch-track"><div class="bch-fill" style="width:${m.val}%;background:${m.color}"></div></div><div class="bch-val" style="color:${m.c}">${m.val}%</div></div>`;}); }
+  // diff grid
+  const dg=document.getElementById('diffGrid');
+  if(dg){dg.innerHTML='';diffData.forEach(d=>{dg.innerHTML+=`<div class="diff-card" style="background:${d.bg}" onclick="toast('📊 ${d.name}: ${d.score}%')"><div class="dc-sub">${d.name}</div><div class="dc-score">${d.score}%</div><div class="dc-bar"><div class="dc-fill" style="width:${d.score}%"></div></div></div>`;});}
+  // hist chart
+  const hc=document.getElementById('histChart');const hl=document.getElementById('histLabels');
+  if(hc){hc.innerHTML='';hl.innerHTML='';const maxM=Math.max(...mScores.filter(Boolean));const colors=['#B5FF2D','#00F5FF','#7C3AED','#FF6B6B','#FFD700','#B5FF2D','#00F5FF','#FF6B6B'];
+  months.forEach((m,i)=>{const col=document.createElement('div');col.className='hc-col';const bar=document.createElement('div');bar.className='hc-bar';const h=mScores[i]?(mScores[i]/maxM)*100:0;bar.style.cssText=`height:${h}px;background:${colors[i%8]};opacity:${mScores[i]?1:.2}`;const lbl=document.createElement('div');lbl.className='hc-label';lbl.textContent=m;col.appendChild(bar);col.appendChild(lbl);hc.appendChild(col);});}
+}
+function updateTime(){const n=new Date();document.getElementById('sbTime').textContent=`${n.getHours()}:${String(n.getMinutes()).padStart(2,'0')}`;}
+updateTime();setInterval(updateTime,10000);
+setTimeout(()=>goScreen('onboard'),2400);
+</script>
+</body>
+</html>
